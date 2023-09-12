@@ -1,0 +1,1 @@
+<img src="/katze.png" width="40" height="40" />

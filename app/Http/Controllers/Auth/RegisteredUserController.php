@@ -30,34 +30,20 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-
-        //check if email or username
         $inputType = filter_var($request->email_or_username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $uniqueField = ($inputType === 'email') ? 'users' : 'users,username';
 
-        if ($inputType === 'email') {
+        $request->validate([
+            $inputType => "string|max:255|unique:$uniqueField",
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
 
-            $request->validate([
-                'email' => 'string|email|max:255|unique:users',
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            ]);
-            $user = User::create([
-                'email' => $request->email_or_username,
-                'password' => Hash::make($request->password),
-            ]);
-        } else {
-
-            $request->validate([
-                'email_or_username' => 'string|max:255|unique:users,username',
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            ]);
-            $user = User::create([
-                'username' => $request->email_or_username,
-                'password' => Hash::make($request->password),
-            ]);
-        }
+        $user = User::create([
+            $inputType => $request->email_or_username,
+            'password' => Hash::make($request->password),
+        ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);

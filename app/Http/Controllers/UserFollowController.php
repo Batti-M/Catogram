@@ -6,15 +6,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Providers\FollowerGained;
 
-
 class UserController extends Controller
 {
     public function toggleFollow(Request $request)
     {
-
         $author = User::find($request->author['id']);
         $authenticatedUser = User::find(auth()->user()->id);
-
 
         if ($authenticatedUser->following()->where('follower_id', $author->id)->exists()) {
             $authenticatedUser->following()->detach($author->id);

@@ -9,22 +9,25 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'user_id',
         'post_image',
         'description',
-        'content'
+        'content',
     ];
-    
-    public function author(){
+
+    public function author()
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
 
-    public function likes(){
+    public function likes()
+    {
         return $this->hasMany(Like::class);
     }
 }

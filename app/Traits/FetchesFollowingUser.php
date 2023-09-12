@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Traits;
 
@@ -8,10 +8,8 @@ trait FetchesFollowingUser
 {
     public function getFollowingUsers(User $user)
     {
-        
         $following = $user->followers()->pluck('user_id');
-        $followingUser = User::whereIn('id', $following)->get();
 
-       return $followingUser;
+        return User::whereIn('id', $following)->get();
     }
 }

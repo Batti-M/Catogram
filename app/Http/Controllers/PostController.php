@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-
-
     public function create()
     {
         return view('posts.create');
@@ -45,7 +43,7 @@ class PostController extends Controller
 
         $post = Post::where('id', $post->id)->with('author', 'likes', 'comments')->firstOrFail();
         return view('posts.show', [
-            'post' => $post
+            'post' => $post,
         ]);
     }
 

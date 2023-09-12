@@ -9,13 +9,15 @@ class Like extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $with = ['user' , 'post'];
+    protected $with = ['user', 'post'];
 
-    public function post(){
+    public function post()
+    {
         return $this->belongsTo(Post::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

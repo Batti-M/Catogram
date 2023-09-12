@@ -3,13 +3,10 @@
 namespace App\Providers;
 
 use App\Models\User;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class FollowerGained
 {
@@ -18,15 +15,11 @@ class FollowerGained
     /**
      * Create a new event instance.
      */
-    public $follower;
-    public $followed;
-    
-    public function __construct(User $follower, User $followed)
+    public function __construct(public User $follower, public User $followed)
     {
         $this->follower = $follower;
         $this->followed = $followed;
     }
-
 
     /**
      * Get the channels the event should broadcast on.

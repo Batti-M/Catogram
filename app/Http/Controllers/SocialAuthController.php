@@ -15,7 +15,7 @@ class SocialAuthController extends Controller
     }
     public function handleProviderCallback($provider)
     {
-        $oauthUser = Socialite::driver('github')->user();
+        $oauthUser = Socialite::driver($provider)->user();
         $user = $this->findOrCreateUser($oauthUser, $provider);
 
         Auth::login($user, true);
@@ -25,32 +25,27 @@ class SocialAuthController extends Controller
 
     public function findOrCreateUser($oauthUser, $provider)
     {
-
         $user = User::whereEmail($oauthUser->getEmail())
-            ->orWhereHas('oauth', function ($query) use ($provider, $oauthUser) {
-                $query->where([
-                    'provider_name' => $provider,
-                    'provider_id'   => $oauthUser->getId(),
-                ]);
-            })->first();
+            ->orWhereHas('oauth', fn ($query) => $query->where([
+                'provider_name' => $provider,
+                'provider_id' => $oauthUser->getId(),
+            ]))->first();
 
-
-        if ($user) {
+        if ($user){
             return $user;
         }
-
+        
         $user = User::create([
-            'name' => $oauthUser->getName(),
+            'name' => $name = $oauthUser->getName(),
             'email' => $oauthUser->getEmail(),
-            'username'  => $oauthUser->getName(),
-            'password' => null
+            'username' => $name,
+            'password' => null,
         ]);
 
-
         $user->oauth()->create([
-            'user_id'       => $user->id,
+            'user_id' => $user->id,
             'provider_name' => $provider,
-            'provider_id'   => $oauthUser->getId(),
+            'provider_id' => $oauthUser->getId(),
         ]);
 
         return $user;

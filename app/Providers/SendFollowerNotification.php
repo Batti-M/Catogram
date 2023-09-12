@@ -3,10 +3,9 @@
 namespace App\Providers;
 
 use App\Mail\NewFollower;
-use App\Providers\FollowerGained;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class SendFollowerNotification implements ShouldQueue
 {

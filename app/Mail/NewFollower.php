@@ -8,7 +8,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NewFollower extends Mailable
 {
@@ -19,7 +18,7 @@ class NewFollower extends Mailable
      */
     public function __construct(public User $follower, public User $followed)
     {
-        //
+
     }
 
     /**

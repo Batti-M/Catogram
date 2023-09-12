@@ -50,30 +50,29 @@ class User extends Authenticatable implements MustVerifyEmail
             ? asset('storage/' . $this->attributes['profile_image'])
             : 'https://ui-avatars.com/api/?name=' . urlencode($this->attributes['name']) . '&color=7F9CF5&background=EBF4FF';
     }
-
-
     public function posts()
     {
         return $this->hasMany('App\Models\Post');
     }
-    public function oauth() 
+    public function oauth()
     {
         return $this->hasOne('App\Models\SocialAuth');
         //change to ->hasMany when more than just github is used for oAuth
     }
-
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
-    public function likes(){
+    public function likes()
+    {
         return $this->hasMany(Like::class);
     }
-
-    public function following() {
+    public function following()
+    {
         return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id')->withTimestamps();
     }
-    
-    public function followers() {
+    public function followers()
+    {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id')->withTimestamps();
     }
 }

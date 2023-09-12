@@ -7,9 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -28,7 +26,6 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        
         $user = User::find(auth()->user()->id);
         $attributes = $request->validate([
             'name' => 'string', 'max:255',
@@ -39,7 +36,7 @@ class ProfileController extends Controller
 
         if ($request->hasFile('profile_image')) {
             $attributes['profile_image'] = $request->file('profile_image')->store('profile_images', 'public');
-          }
+        }
 
         $user->update($attributes);
 

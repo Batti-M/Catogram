@@ -10,10 +10,9 @@ class UserProfileController extends Controller
     use FetchesFollowingUser;
     public function index(User $user)
     {
-
-        return view('User.profile',  [
+        return view('User.profile', [
             'user' => $user,
-            'followingUser' => $this->getFollowingUsers($user)
+            'followingUser' => $this->getFollowingUsers($user),
         ]);
     }
 
@@ -22,7 +21,4 @@ class UserProfileController extends Controller
         $user = auth()->user();
         return view('profile.edit', compact('user'));
     }
-
-
-
 }

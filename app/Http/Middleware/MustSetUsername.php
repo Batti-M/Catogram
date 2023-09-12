@@ -16,7 +16,7 @@ class MustSetUsername
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check() && is_null(auth()->user()->username)) {
-            return redirect()->route('profile.edit')->with('info', 'You must set your username first'); 
+            return redirect()->route('profile.edit')->with('info', 'You must set your username first');
         }
         return $next($request);
     }

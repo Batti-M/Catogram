@@ -34,7 +34,7 @@ class RegisteredUserController extends Controller
         $uniqueField = ($inputType === 'email') ? 'users' : 'users,username';
 
         $request->validate([
-            $inputType => "string|max:255|unique:$uniqueField",
+            $inputType => "string|max:255|unique:{$uniqueField}",
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 

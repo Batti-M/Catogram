@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Providers\FollowerGained;
 
-class UserController extends Controller
+class UserFollowController extends Controller
 {
     public function toggleFollow(Request $request)
     {

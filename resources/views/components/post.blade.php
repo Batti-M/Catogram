@@ -8,9 +8,25 @@
     <img src="{{ asset('storage/'. $post->post_image)}}" class="w-1/3 max-h-[400px] aspect-square object-cover rounded" alt=" {{$post->description}} ">
     <div class="flex flex-col w-full" 
         x-data="{open: false, like: {{ $isLiked ? 'true' : 'false' }}, comments_open: true, follow: {{ $user->following->contains($post->author->id) ? 'true' : 'false' }} }">
-        <a href="/user-profile/{{ $post->author->username }}" class="underline hover:text-blue-500">{{$post->author->username}}</a> <small>posted {{$post->created_at->diffForHumans()}}</small>
+        <div class="flex justify-between">
+            <div class="flex flex-col">
+                <a href="/user-profile/{{ $post->author->username }}" 
+                    class="underline hover:text-blue-500">{{$post->author->username}}</a> 
+                <small>posted {{$post->created_at->diffForHumans()}} on {{ date('d-m-Y', strtotime($post->created_at)) }}</small>
+            </div>
+            @if($post->author->id === $user->id)
+                <div class="flex">
+                    <a type="button" href="/posts/{{$post->id}}/edit" class="bg-blue-500 px-4 py-2 rounded uppercase m-1"> Edit </a>
+                    <form method="POST" action="{{ route('posts.destroy', $post->id) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 px-4 py-2 rounded uppercase mt-1"> Delete </button>
+                    </form>
+                </div>
+            @endif
+        </div>
         <p class="my-12 p-2 rounded-xl bg-gray-900">{{ nl2br($post->content) }}</p>
-        
+        @if($post->author->id !== $user->id)
         <div class="flex justify-around gap-4 self-end" >
             <form method="POST" action="/toggleLike/{{$post->id}}" 
                 class="flex justify-around gap-4 self-end" >
@@ -26,6 +42,11 @@
                
             </button>
         </div>
+        @else 
+        <div class="self-end">
+            <button @click="open = !open"><i class="fa-solid fa-comment-dots text-3xl hover:cursor-pointer" > </i></button>
+        </div> 
+        @endif
         <button @click="comments_open = !comments_open" x-text="comments_open ? 'Hide comments' : 'Show comments' ">  </button>
         <section x-show="open" x-transition.duration.500ms class="col-span-8 col-start-5 my-5 flex justify-end">
             @auth
@@ -33,7 +54,7 @@
                     @csrf
 
                     <header class="flex items-center">
-                        <img src="https://i.pravatar.cc/60?u={{ auth()->id() }}" alt="" width="40" height="40" class="rounded-full">
+                        <img src="{{ $post->author->profile_image }}" alt="{{ $post->author->username }}" width="40" height="40" class="w-24 h-24 rounded-full object-cover">
                         <p class="ml-4">{{ $post->author->name }}</p>
                     </header>
                     <div class="mt-6 ">
@@ -42,10 +63,7 @@
                         rows="3" 
                         placeholder="Leave a comment!" 
                         required>
-
-
                         </textarea>
-
                         @error('content')
                             <span class="text-xs text-red-500">{{ $message }}</span>
                         @enderror
@@ -62,7 +80,7 @@
                 <div class="flex flex-col m-2 p-4 rounded-lg justify-end items-end bg-gray-900">
                     <p class="bg-gray-600 p-3 mb-2 rounded-xl"> {!! nl2br($comment->content) !!} </p>
                     <div class="flex items-center">
-                        <img src="https://i.pravatar.cc/60?u={{ $comment->user_id }}" alt="" width="30" height="30" class="rounded-full mr-2">
+                        <img src="{{ $comment->author->profile_image}}" alt="" width="30" height="30" class="w-12 h-12 rounded-full object-cover mr-4">
                         <a href="/user-profile/{{$comment->author->username}}" class="underline hover:text-blue-500 mr-12">{{$comment->author->username}}</a>
                         <time class="text-xs "> {{$comment->created_at->diffForHumans()}} </time>
                     </div>

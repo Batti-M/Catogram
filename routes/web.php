@@ -24,44 +24,9 @@ use App\Http\Controllers\UserProfileController;
 |
 */
 
-Route::get('/search', SearchController::class);
-
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get(
-    '/user-profile/{user:username}',
-    [UserProfileController::class, 'index']
-)
-    ->name('user-profile');
-Route::get(
-    '/user-profile/{user:username}/edit',
-    [UserProfileController::class, 'edit']
-)
-    ->name('profile.edit');
-Route::patch(
-    '/user-profile/{user:username}',
-    [UserProfileController::class, 'update']
-)
-    ->name('profile.update');
-
-Route::post('/toggleLike/{post}', [LikeController::class, 'toggleLike']);
-Route::post('/toggle-follow', [UserFollowController::class, 'toggleFollow'])
-    ->name('toggleFollow');
-
-Route::resource('/posts', PostController::class);
-Route::post('/posts/{post}/comments', [CommentController::class, 'store'])
-    ->name('posts.comments.store');
-
-Route::get('/home', [HomeController::class, 'index'])
-    ->name('home')
-    ->middleware('hasSetUsername');
-Route::get('/explore', [ExploreController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('explore');
-Route::get('/community', [CommunityPostController::class, 'index'])
-    ->name('community');
 
 Route::get(
     '/auth/{provider}/redirect',
@@ -71,14 +36,49 @@ Route::get(
     '/auth/{provider}/callback',
     [SocialAuthController::class, 'handleProviderCallback']
 );
+Route::middleware(['auth', 'verified', 'hasSetUsername'])->group(function () {
+    Route::post('/toggleLike/{post}', [LikeController::class, 'toggleLike']);
+    Route::post('/toggle-follow', [UserFollowController::class, 'toggleFollow'])
+        ->name('toggleFollow');
+    Route::resource('/posts', PostController::class);
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])
+        ->name('posts.comments.store');
+});
 
 Route::middleware('auth')->group(function () {
+    Route::get('/search', SearchController::class);
+    Route::get('/home', [HomeController::class, 'index'])
+        ->name('home')->middleware('hasSetUsername');
+    Route::get(
+        '/user-profile/{user:username}',
+        [UserProfileController::class, 'index']
+    )
+        ->name('user-profile');
+    Route::get(
+        '/user-profile/{user:username}/edit',
+        [UserProfileController::class, 'edit']
+    )
+        ->name('profile.edit');
+    Route::patch(
+        '/user-profile/{user:username}',
+        [UserProfileController::class, 'update']
+    )
+        ->name('profile.update');
+
+    Route::get('/explore', [ExploreController::class, 'index'])
+        ->name('explore');
+    Route::get('/community', [CommunityPostController::class, 'index'])
+        ->name('community');
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
+    Route::get('/posts/{post:id}', [PostController::class, 'show'])
+        ->name('posts.show');
 });
+
+
 
 require __DIR__ . '/auth.php';

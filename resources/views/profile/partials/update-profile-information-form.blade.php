@@ -18,7 +18,7 @@
         @method('patch')
         @if(session('info'))
             <p class="mt-2 font-medium text-sm text-red-600 dark:text-red-400">
-                {{ __('Please set a Username to create your own posts.') }}
+                {{ __('Please set a Username') }}
             </p>
     	@endif
         <div>

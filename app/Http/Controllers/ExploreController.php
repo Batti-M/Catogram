@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\FetchesFollowingUser;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
+
 class ExploreController extends Controller
 {
+    use FetchesFollowingUser;
     public function index(Request $request)
     {
         $ownPosts = Post::where('user_id', auth()->user()->id)->latest()->get();
@@ -16,7 +19,8 @@ class ExploreController extends Controller
         $posts = $ownPosts->merge($followingPosts)->sortByDesc('created_at');
 
         return view('explore', [
-            'posts' => $posts
+            'posts' => $posts,
+            'followingUser' => $this->getFollowingUsers($request->user()),
         ]);
     }
 }

@@ -52,7 +52,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', [
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -60,7 +62,14 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $attributes = $request->validate([
+            'description' => ['string', 'max:255'], // 'nullable
+            'content' => ['required', 'min:3'],
+        ]);
+
+        $post->update($attributes);
+
+        return to_route('home');
     }
 
     /**
@@ -68,6 +77,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return to_route('home');
     }
 }
